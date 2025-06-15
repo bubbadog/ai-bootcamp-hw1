@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Sparkles, Feather, BookOpen, Wand2 } from "lucide-react";
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, append } = useChat();
+  const { messages, isLoading, append } = useChat();
 
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [selectedPersonality, setSelectedPersonality] = useState(null);
