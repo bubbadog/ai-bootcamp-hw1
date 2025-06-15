@@ -15,15 +15,22 @@ export async function POST(req: Request) {
     console.log("API called with messages:", messages);
 
     const result = streamText({
-      model: openai("gpt-4o-mini"), // Changed to gpt-4o-mini for better reliability
+      model: openai("gpt-4o-mini"),
       messages,
     });
 
     return result.toDataStreamResponse();
   } catch (error) {
     console.error("API Route Error:", error);
+    
+    // Fix: Type-safe error handling
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    
     return new Response(
-      JSON.stringify({ error: "Internal Server Error", details: error.message }), 
+      JSON.stringify({ 
+        error: "Internal Server Error", 
+        details: errorMessage 
+      }), 
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
