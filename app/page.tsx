@@ -3,13 +3,32 @@ import { useChat } from "ai/react";
 import { useState } from "react";
 import { Sparkles, Feather, BookOpen, Wand2 } from "lucide-react";
 
+// TypeScript interfaces
+interface ProgrammingLanguage {
+  name: string;
+  emoji: string;
+  color: string;
+  bgColor: string;
+  concepts: string[];
+}
+
+interface AIPersonality {
+  name: string;
+  icon: string;
+  description: string;
+  traits: string[];
+  color: string;
+}
+
 export default function Chat() {
   const { messages, isLoading, append } = useChat();
 
-  const [selectedLanguage, setSelectedLanguage] = useState(null);
-  const [selectedPersonality, setSelectedPersonality] = useState(null);
+  // Properly typed state variables
+  const [selectedLanguage, setSelectedLanguage] = useState<ProgrammingLanguage | null>(null);
+  const [selectedPersonality, setSelectedPersonality] = useState<AIPersonality | null>(null);
 
-  const programmingLanguages = [
+  // Typed data arrays
+  const programmingLanguages: ProgrammingLanguage[] = [
     { 
       name: 'Python', 
       emoji: '🐍',
@@ -54,7 +73,7 @@ export default function Chat() {
     }
   ];
 
-  const aiPersonalities = [
+  const aiPersonalities: AIPersonality[] = [
     {
       name: 'Wise Mentor',
       icon: '🧙‍♂️',
@@ -304,14 +323,14 @@ export default function Chat() {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedLanguage?.name !== lang.name) {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                      e.target.style.transform = 'scale(1.02)';
+                      (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.15)';
+                      (e.target as HTMLElement).style.transform = 'scale(1.02)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedLanguage?.name !== lang.name) {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                      e.target.style.transform = 'scale(1)';
+                      (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.1)';
+                      (e.target as HTMLElement).style.transform = 'scale(1)';
                     }
                   }}
                 >
@@ -383,14 +402,14 @@ export default function Chat() {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedPersonality?.name !== personality.name) {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                      e.target.style.transform = 'scale(1.02)';
+                      (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.15)';
+                      (e.target as HTMLElement).style.transform = 'scale(1.02)';
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedPersonality?.name !== personality.name) {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                      e.target.style.transform = 'scale(1)';
+                      (e.target as HTMLElement).style.background = 'rgba(255, 255, 255, 0.1)';
+                      (e.target as HTMLElement).style.transform = 'scale(1)';
                     }
                   }}
                 >
@@ -480,14 +499,14 @@ export default function Chat() {
             }}
             onMouseEnter={(e) => {
               if (!isLoading) {
-                e.target.style.background = 'linear-gradient(90deg, #9333ea 0%, #be185d 100%)';
-                e.target.style.transform = 'scale(1.05)';
+                (e.target as HTMLElement).style.background = 'linear-gradient(90deg, #9333ea 0%, #be185d 100%)';
+                (e.target as HTMLElement).style.transform = 'scale(1.05)';
               }
             }}
             onMouseLeave={(e) => {
               if (!isLoading) {
-                e.target.style.background = 'linear-gradient(90deg, #a855f7 0%, #ec4899 100%)';
-                e.target.style.transform = 'scale(1)';
+                (e.target as HTMLElement).style.background = 'linear-gradient(90deg, #a855f7 0%, #ec4899 100%)';
+                (e.target as HTMLElement).style.transform = 'scale(1)';
               }
             }}
           >
@@ -526,8 +545,8 @@ export default function Chat() {
             margin: '0 auto',
             maxWidth: '800px'
           }}
-          onMouseEnter={(e) => e.target.style.transform = 'scale(1.02)'}
-          onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+          onMouseEnter={(e) => (e.target as HTMLElement).style.transform = 'scale(1.02)'}
+          onMouseLeave={(e) => (e.target as HTMLElement).style.transform = 'scale(1)'}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
               <BookOpen style={{ width: '24px', height: '24px', color: '#c4b5fd', marginRight: '12px' }} />
@@ -580,8 +599,8 @@ export default function Chat() {
                     padding: '24px',
                     transition: 'background-color 0.3s ease'
                   }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.05)'}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                       <Sparkles style={{ width: '20px', height: '20px', color: '#c4b5fd', marginRight: '8px' }} />
@@ -650,12 +669,12 @@ export default function Chat() {
                 transform: 'scale(1)'
               }}
               onMouseEnter={(e) => {
-                e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                e.target.style.transform = 'scale(1.05)';
+                (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                (e.target as HTMLElement).style.transform = 'scale(1.05)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                e.target.style.transform = 'scale(1)';
+                (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                (e.target as HTMLElement).style.transform = 'scale(1)';
               }}
             >
               <feature.icon style={{
