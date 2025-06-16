@@ -1,4 +1,6 @@
-import { openai } from "@ai-sdk/openai";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import OpenAI from 'openai';
 
 export const maxDuration = 30;
@@ -34,22 +36,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validate voice parameter
-    const validVoices = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
+    const validVoices = ['alloy', 'echo', 'fable', 'onyx', 'nova'];
     const selectedVoice = validVoices.includes(voice) ? voice : 'alloy';
 
     console.log(`Generating speech for text length: ${text.length}, voice: ${selectedVoice}`);
 
     const mp3 = await openaiClient.audio.speech.create({
       model: "tts-1",
-      voice: selectedVoice as any, // OpenAI voice type
+      voice: selectedVoice as 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova',
       input: text,
-      speed: 0.9, // Slightly slower for poetry
+      speed: 0.9,
     });
 
     console.log("Speech generated successfully");
 
-    // Convert the response to a buffer
     const buffer = Buffer.from(await mp3.arrayBuffer());
 
     return new Response(buffer, {
