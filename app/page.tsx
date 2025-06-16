@@ -21,7 +21,12 @@ interface AIPersonality {
 }
 
 export default function Chat() {
-  const { messages, isLoading, append } = useChat();
+  const { messages, isLoading, append, error } = useChat({
+    api: '/api/chat',
+    onError: (error) => {
+      console.error('Chat error:', error);
+    }
+  });
 
   // Properly typed state variables
   const [selectedLanguage, setSelectedLanguage] = useState<ProgrammingLanguage | null>(null);
@@ -129,6 +134,8 @@ export default function Chat() {
       prompt = `Write a beautiful poem from the perspective of an AI with a "${selectedPersonality.name}" personality about coding. The AI should be ${selectedPersonality.traits.join(', ')} and embody the essence of "${selectedPersonality.description}".`;
     }
 
+    console.log('Generating poem with prompt:', prompt);
+    
     append({
       role: "user",
       content: prompt,
@@ -281,6 +288,36 @@ export default function Chat() {
           }}>
             Where artificial intelligence meets the art of poetry. Create beautiful, unique verses about coding and AI with the power of advanced language models.
           </p>
+
+          {/* Error Display */}
+          {error && (
+            <div style={{ 
+              backgroundColor: 'rgba(239, 68, 68, 0.1)', 
+              color: '#fca5a5', 
+              padding: '16px', 
+              margin: '16px 0',
+              borderRadius: '12px',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              backdropFilter: 'blur(8px)'
+            }}>
+              <strong>Error:</strong> {error.message}
+            </div>
+          )}
+
+          {/* Debug Info */}
+          {process.env.NODE_ENV === 'development' && (
+            <div style={{ 
+              backgroundColor: 'rgba(59, 130, 246, 0.1)', 
+              color: '#93c5fd', 
+              padding: '12px', 
+              margin: '12px 0',
+              borderRadius: '8px',
+              fontSize: '0.875rem',
+              border: '1px solid rgba(59, 130, 246, 0.3)'
+            }}>
+              Debug: Messages count: {messages.length} | Loading: {isLoading ? 'Yes' : 'No'}
+            </div>
+          )}
 
           {/* Programming Language Selection */}
           <div style={{
