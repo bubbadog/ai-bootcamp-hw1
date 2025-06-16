@@ -1,7 +1,6 @@
-import { OpenAIStream, StreamingTextResponse } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { streamText } from "ai";
+import { openai } from "@ai-sdk/openai";
 
-export const runtime = 'edge';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
@@ -22,31 +21,19 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
     console.log("Received messages:", messages?.length, "messages");
 
-    // Use OpenAI directly for better compatibility
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: messages,
-        temperature: 0.7,
-        max_tokens: 1000,
-        stream: true,
-      }),
+    console.log("Creating OpenAI stream...");
+    
+    const result = streamText({
+      model: openai("gpt-4o-mini"),
+      messages,
+      temperature: 0.7,
+      maxTokens: 1000,
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error("OpenAI API error:", error);
-      throw new Error(`OpenAI API error: ${response.status}`);
-    }
-
-    // Convert the response to a streaming text response
-    const stream = OpenAIStream(response);
-    return new StreamingTextResponse(stream);
+    console.log("Stream created, returning response");
+    
+    // Use toDataStreamResponse which should be available in your AI SDK version
+    return result.toDataStreamResponse();
     
   } catch (error) {
     console.error("API Route Error:", error);
@@ -74,7 +61,7 @@ export async function GET() {
       message: "Chat API is working",
       hasApiKey: !!process.env.OPENAI_API_KEY,
       timestamp: new Date().toISOString(),
-      runtime: "edge"
+      model: "gpt-4o-mini"
     }), 
     { 
       status: 200, 
