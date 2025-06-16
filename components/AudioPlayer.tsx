@@ -15,6 +15,7 @@ const VOICES = [
   { id: 'fable', name: 'Fable', description: 'Storytelling voice', emoji: '📖' },
   { id: 'onyx', name: 'Onyx', description: 'Deep and resonant', emoji: '🗿' },
   { id: 'nova', name: 'Nova', description: 'Bright and energetic', emoji: '⭐' },
+  { id: 'shimmer', name: 'Shimmer', description: 'Soft and gentle', emoji: '✨' },
 ] as const;
 
 type VoiceId = typeof VOICES[number]['id'];
@@ -45,7 +46,7 @@ export default function AudioPlayer({ text, disabled = false }: AudioPlayerProps
       
       setAudioPermissionGranted(true);
       return true;
-    } catch (error) {
+    } catch (_error) {
       console.log('Audio permission not yet granted');
       return false;
     }
@@ -68,7 +69,7 @@ export default function AudioPlayer({ text, disabled = false }: AudioPlayerProps
       audio.removeEventListener('loadedmetadata', updateDuration);
       audio.removeEventListener('durationchange', updateDuration);
     };
-  }, [audioRef.current]);
+  }, []);
 
   // Generate audio for the selected voice
   const generateAudio = async (voice: VoiceId) => {
