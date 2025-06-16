@@ -1,6 +1,7 @@
-import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { openai } from '@ai-sdk/openai';
 
+export const runtime = 'edge';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
@@ -19,28 +20,33 @@ export async function POST(req: Request) {
     }
 
     const { messages } = await req.json();
-    console.log("Received messages:", JSON.stringify(messages, null, 2));
+    console.log("Received messages:", messages?.length, "messages");
 
-    console.log("Creating OpenAI stream...");
-    
-    const result = streamText({
-      model: openai("gpt-4o-mini"),
-      messages,
-      temperature: 0.7,
-      maxTokens: 1000,
+    // Use OpenAI directly for better compatibility
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 1000,
+        stream: true,
+      }),
     });
 
-    console.log("Stream created, returning response");
-    
-    // This is the key fix - ensure proper streaming response
-    const response = result.toDataStreamResponse();
-    
-    // Add proper headers for CORS if needed
-    response.headers.set('Access-Control-Allow-Origin', '*');
-    response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-    
-    return response;
+    if (!response.ok) {
+      const error = await response.text();
+      console.error("OpenAI API error:", error);
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+
+    // Convert the response to a streaming text response
+    const stream = OpenAIStream(response);
+    return new StreamingTextResponse(stream);
     
   } catch (error) {
     console.error("API Route Error:", error);
@@ -68,23 +74,11 @@ export async function GET() {
       message: "Chat API is working",
       hasApiKey: !!process.env.OPENAI_API_KEY,
       timestamp: new Date().toISOString(),
-      model: "gpt-4o-mini"
+      runtime: "edge"
     }), 
     { 
       status: 200, 
       headers: { 'Content-Type': 'application/json' } 
     }
   );
-}
-
-// Add OPTIONS handler for CORS
-export async function OPTIONS() {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
 }
