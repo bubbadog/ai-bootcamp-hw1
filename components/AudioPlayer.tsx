@@ -46,7 +46,7 @@ export default function AudioPlayer({ text, disabled = false }: AudioPlayerProps
       
       setAudioPermissionGranted(true);
       return true;
-    } catch (_error) {
+    } catch {
       console.log('Audio permission not yet granted');
       return false;
     }
