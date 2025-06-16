@@ -30,10 +30,31 @@ export async function POST(req: Request) {
       maxTokens: 1000,
     });
 
-    console.log("Stream created, returning response");
+    console.log("Stream created, returning response with error handling");
     
-    // Use toDataStreamResponse which should be available in your AI SDK version
-    return result.toDataStreamResponse();
+    // THE KEY FIX: Add getErrorMessage to unmask errors
+    return result.toDataStreamResponse({
+      getErrorMessage: (error) => {
+        console.error("Streaming error:", error);
+        
+        // Return specific error messages for debugging
+        if (error.message?.includes('rate limit')) {
+          return 'Rate limit exceeded. Please try again later.';
+        }
+        if (error.message?.includes('API key')) {
+          return 'Invalid API key. Please check your configuration.';
+        }
+        if (error.message?.includes('network')) {
+          return 'Network error. Please check your connection.';
+        }
+        
+        // For development, return the actual error message
+        // For production, you might want to return a generic message
+        return process.env.NODE_ENV === 'development' 
+          ? `Error: ${error.message}` 
+          : 'An error occurred while generating the poem. Please try again.';
+      }
+    });
     
   } catch (error) {
     console.error("API Route Error:", error);
