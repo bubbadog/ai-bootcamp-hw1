@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       model: openai("gpt-4o-mini"),
       messages,
       temperature: 0.7,
-      maxTokens: 400,
+      maxTokens: 500,
     });
 
     console.log("Stream created, returning response with error handling");

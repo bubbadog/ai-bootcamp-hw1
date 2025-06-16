@@ -2,6 +2,7 @@
 import { useChat } from "ai/react";
 import { useState } from "react";
 import { Sparkles, Feather, BookOpen, Wand2 } from "lucide-react";
+import AudioPlayer from "../components/AudioPlayer";
 
 // TypeScript interfaces
 interface ProgrammingLanguage {
@@ -597,11 +598,14 @@ export default function Chat() {
               fontSize: '1.125rem',
               color: '#ddd6fe',
               lineHeight: '1.625',
-              margin: 0,
+              margin: '0 0 24px 0',
               textAlign: 'center'
             }}>
               {latestPoem}
             </pre>
+            
+            {/* Audio Player */}
+            <AudioPlayer text={latestPoem} disabled={isLoading} />
           </div>
         </div>
       )}
@@ -650,11 +654,14 @@ export default function Chat() {
                       fontFamily: 'serif',
                       color: '#ddd6fe',
                       lineHeight: '1.625',
-                      margin: 0,
+                      margin: '0 0 16px 0',
                       textAlign: 'center'
                     }}>
                       {m.content}
                     </pre>
+                    
+                    {/* Audio Player for older poems */}
+                    <AudioPlayer text={m.content} disabled={false} />
                   </div>
                 )}
               </div>
