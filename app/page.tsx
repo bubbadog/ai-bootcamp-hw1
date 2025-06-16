@@ -74,7 +74,7 @@ export default function Chat() {
       name: 'C++', 
       emoji: '⚙️',
       color: '#00599c', 
-      bgColor: 'linear-gradient(135deg, #00599c, #004482)',
+      bgColor: 'linear-gradient(135deg, #00599c, #87ceeb)',
       concepts: ['templates', 'pointers', 'performance', 'low-level control']
     }
   ];
